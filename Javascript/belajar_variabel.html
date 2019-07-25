@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="Latihan2/css/bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Belajar Variabel dalam javascript</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-10 offset-1">
+                <h2>Daftar Siswa</h2>
+                <form action="javascript:void(0);" method="POST" onsubmit="app.Add()">
+                    <input type="text" id="addName" placeholder="Name">
+                    <div>
+                        <input type="text" id="addKelas" placeholder="Class">
+                    </div>
+                    <div>
+                        <input type="text" id="addAbsen" placeholder="Absen">
+                    </div>
+                    <input type="submit" value="Add">
+                </form>
+                <div id="formEdit" role="aria-hidden">
+                    <form action="javascript:void(0);" method="POST" id="saveEdit">
+                        <input type="text" id="editName" placeholder="Edit Name">
+                        <div>
+                            <input type="text" id="editKelas" placeholder="Edit Class">
+                        </div>
+                        <div>
+                            <input type="text" id="editAbsen" placeholder="Edit Absen">
+                        </div>
+                        <input type="submit" value="Edit">
+                        <a onclick="CloseInput()" aria-label="Close"></a>
+                    </form>
+                </div>
+
+                <p id="hitung"></p>
+
+                <table class="table-responsive">
+                    <tr class="tabel">
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Absen</th>
+                        <th>Action</th>
+                    </tr>
+                    <tbody id="name"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var app = new (function (data) {
+            this.getName = document.getElementById("name");
+            this.getClass = document.getElementById("class");
+            this.getAbsen = document.getElementById("absen");
+            this.Name = []; //untuk menampung result array
+            this.Kelas = [];
+            this.Absen = [];
+
+            this.Hitung = function (data) {
+                var use = document.getElementById("hitung");
+                var name = "Siswa";
+
+                if (data) {
+                    use.innerHTML = data + " " + name;
+                } else {
+                    use.innerHTML = "Tidak ada " + name;
+                }
+            };
+
+            this.ShowData = function () {
+                var data1 = " "
+                if (this.Name.length > 0) {
+                    for (i = 0; i < this.Name.length; i++) {
+                        data1 += "<tr>";
+                        data1 += "<td>" + this.Name[i] + "</td>";
+                        data1 += "<td>" + this.Kelas[i] + "</td>";
+                        data1 += "<td>" + this.Absen[i] + "</td>";
+                        data1 += '<td> <button class="btn btn-info" onclick="app.Edit (' + i + ')"> Edit </button> </td>';
+                        data1 += '<td> <button class="btn btn-danger" onclick="app.Delete (' + i + ')"> Delete </button> </td>';
+                        data1 += "</tr>";
+                    }
+                }
+                this.Hitung(this.Name.length);
+                return (this.getName.innerHTML = data1);
+            };
+            this.Add = function () {
+                var getIdAddName = document.getElementById("addName")
+                var add = getIdAddName.value;
+                var getIdAddKelas = document.getElementById("addKelas")
+                var add2 = getIdAddKelas.value;
+                var getIdAddAbsen = document.getElementById("addAbsen")
+                var add3 = getIdAddAbsen.value;
+
+                if (getIdAddName) {
+                    this.Name.push(add.trim());
+                    this.Kelas.push(add2.trim());
+                    this.Absen.push(add3.trim());
+
+                    getIdAddName.value = " ";
+                    getIdAddKelas.value = " ";
+                    getIdAddAbsen.value = " ";
+                    this.ShowData();
+                }
+            };
+            this.Edit = function (item) {
+                var edit = document.getElementById("editName");//mengambil data pada data yg sudah ada
+                //menampilkan data
+                var edit2 = document.getElementById("editKelas");
+                var edit3 = document.getElementById("editAbsen");
+                edit.value = this.Name[item];
+                edit2.value = this.Kelas[item];
+                edit3.value = this.Absen[item];
+                document.getElementById("formEdit").style.display = "block";
+
+                yurod = this;
+                document.getElementById("saveEdit").onsubmit = function () {
+                    var newName = edit.value;
+                    var newKelas = edit2.value;
+                    var newAbsen = edit3.value;
+                    if (newName) {
+                        yurod.Name.splice(item, 1, newName.trim());
+                        yurod.Kelas.splice(item, 1, newKelas.trim());
+                        yurod.Absen.splice(item, 1, newAbsen.trim());
+                        yurod.ShowData();
+                        CloseInput();
+                    }
+                };
+            };
+            // this.Edit = function (item) {
+            //     var edit = document.getElementById("editName");//mengambil data pada data yg sudah ada
+            //     //menampilkan data
+            //     edit.value = this.Name(item);
+            //     document.getElementById("formEdit").style.display = "block";
+
+            //     self = this;
+            //     document.getElementById("saveEdit").onsubmit = function () {
+            //         var newName = edit.value;
+            //         if (newName) {
+            //             yurod.Name.splice(item, 1, newName.trim());
+            //             yurod.ShowData();
+            //             CloseInput();
+            //         }
+            //     }
+            // }
+            this.Delete = function (item) {
+                this.Name.splice(item, 1);
+
+                this.ShowData();
+            };
+        });
+
+        function CloseInput() {
+            document.getElementById("formEdit").style.display = "none"
+        };
+    </script>
+</body>
+
+</html>
